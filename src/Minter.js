@@ -4,9 +4,8 @@ import {
   getCurrentWalletConnected,
   mintNFT,
   mintNFT_3Pack,
-  mintNFT_5Pack
+  mintNFT_5Pack,
 } from "./util/interact.js";
-
 
 const Minter = (props) => {
   const [walletAddress, setWallet] = useState("");
@@ -27,16 +26,23 @@ const Minter = (props) => {
 
   function addWalletListener() {
     if (window.ethereum) {
+
       window.ethereum.on("accountsChanged", (accounts) => {
-        if (accounts.length > 0) {
+
+        if (accounts) {
           setWallet(accounts[0]);
-          setStatus(<p>♉🐂♊🐅♋🐇♌🐉♍🐍♎🐎♏🐐♐🐒♑🐓♒🐕♓🐖 <br></br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          A single ZodiaCard for the price of one<br></br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          3 pack of ZodiaCards for the price of 2<br></br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          5 pack of ZodiaCards for the price of 3<br></br> ♈🐀♉🐂♊🐅♋🐇♌🐉♍🐍♎🐎♏🐐♐🐒♒🐕♓🐖</p>);
+          setStatus(
+            <p>
+              ♉🐂♊🐅♋🐇♌🐉♍🐍♎🐎♏🐐♐🐒♑🐓♒🐕♓🐖 <br></br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              A single ZodiaCard for the price of one<br></br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              3 pack of ZodiaCards for the price of 2<br></br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              5 pack of ZodiaCards for the price of 3<br></br>{" "}
+              ♈🐀♉🐂♊🐅♋🐇♌🐉♍🐍♎🐎♏🐐♐🐒♒🐕♓🐖
+            </p>
+          );
         } else {
           setWallet("");
           setStatus("Connect to Metamask using the top right button.");
@@ -63,6 +69,10 @@ const Minter = (props) => {
   };
 
   const onMintPressed = async () => {
+    if (!walletAddress) {
+      alert("Please connect to the wallet first.");
+      return;
+    }
     const { success, status } = await mintNFT(url, name, description);
     setStatus(status);
     if (success) {
@@ -72,10 +82,12 @@ const Minter = (props) => {
     }
   };
 
-  
-
   //3 Pack NFT
   const onMintPressed_3Pack = async () => {
+    if (!walletAddress) {
+      alert("Please connect to the wallet first.");
+      return;
+    }
     const { success, status } = await mintNFT_3Pack(url, name, description);
     setStatus(status);
     if (success) {
@@ -85,16 +97,20 @@ const Minter = (props) => {
     }
   };
 
-    //5 Pack NFT
-    const onMintPressed_5Pack = async () => {
-      const { success, status } = await mintNFT_5Pack(url, name, description);
-      setStatus(status);
-      if (success) {
-        setName("");
-        setDescription("");
-        setURL("");
-      }
-    };
+  //5 Pack NFT
+  const onMintPressed_5Pack = async () => {
+    if (!walletAddress) {
+      alert("Please connect to the wallet first.");
+      return;
+    }
+    const { success, status } = await mintNFT_5Pack(url, name, description);
+    setStatus(status);
+    if (success) {
+      setName("");
+      setDescription("");
+      setURL("");
+    }
+  };
 
   return (
     <div className="Minter">
@@ -109,16 +125,14 @@ const Minter = (props) => {
           <span>Connect Wallet</span>
         )}
       </button>
-
       <br></br>
-
-      <center><h1 id="title">PalFutbolito NFT</h1></center>
+      <center>
+        <h1 id="title">Pal'Futbolito NFT</h1>
+      </center>
       {/* PalFutbolito */}
-
       {/* <img width="120" height="120" src="logo.png" />
       <h1>PalFutbolito</h1>      */}
-      
-        {/*<p>
+      {/*<p>
         Simply add your asset's link, name, and description, then press "Mint."
       </p>
        <form> 
@@ -143,31 +157,40 @@ const Minter = (props) => {
       </form> */}
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <center><button id="mintButton" onClick={onMintPressed}>
-        Mint A Single PalFutbolito NFT
-      </button>
-      <br></br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      {/* MINT 3 PACK */}
-      <button id="mintButton_3Pack" onClick={onMintPressed_3Pack}>
-        Mint A Pack of 2 PalFutbolitos
-      </button>
-      <br></br>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      {/* MINT 5 PACK */}
-      <button id="mintButton_5Pack" onClick={onMintPressed_5Pack}>
-        Mint A Pack of 4 PalFutbolitos
-      </button>
+      <center>
+        <button id="mintButton" onClick={onMintPressed}>
+          Mint 1 Pal'Futbolito NFT
+        </button>
+        <br></br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {/* MINT 3 PACK */}
+        <button id="mintButton_3Pack" onClick={onMintPressed_3Pack}>
+          Mint A Pack of 2 Pal'Futbolito NFT
+        </button>
+        <br></br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        {/* MINT 5 PACK */}
+        <button id="mintButton_5Pack" onClick={onMintPressed_5Pack}>
+          Mint A Pack of 4 Pal'Futbolito NFT
+        </button>
       </center>
-
-      <center><p id="status" style={{ color: "#44d2f9" }}>
-        {status}
-      </p>
-      <br></br>
-      <h1 id="title">The Official PalFutbolito NFT Minter.</h1>
-      <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>
+      <center>
+        <p id="status" style={{ color: "#44d2f9" }}>
+          {status}
+        </p>
+        <br></br>
+        <h1 id="title">The Official Pal'Futbolito NFT Minter.</h1>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
+        <br></br>
       </center>
     </div>
   );
